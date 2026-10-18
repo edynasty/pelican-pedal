@@ -1,0 +1,315 @@
+:root {
+  --accent: #ff7a59;
+  --ink: #f6efe3;
+  --muted: rgba(255, 255, 255, 0.55);
+  --panel: rgba(12, 15, 22, 0.55);
+  --line: rgba(255, 255, 255, 0.13);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #07080c;
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app { position: fixed; inset: 0; }
+#app canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+
+.vignette, .grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.vignette {
+  background: radial-gradient(125% 100% at 50% 42%, transparent 52%, rgba(0, 0, 0, 0.5) 100%);
+}
+.grain {
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------------- HUD ---------------- */
+.hud-top {
+  position: fixed;
+  top: max(22px, env(safe-area-inset-top));
+  left: 26px;
+  right: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.brand {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: rgba(255, 255, 255, 0.9);
+}
+.brand span { color: var(--accent); margin: 0 7px; }
+.tag {
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.hud-bottom {
+  position: fixed;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(94vw, 1000px);
+  transition: opacity 0.35s ease;
+}
+.panel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px;
+  border-radius: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+  max-width: 100%;
+}
+.ctl {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+.ctl:hover { background: rgba(255, 255, 255, 0.09); color: #fff; }
+.ctl:active { transform: scale(0.96); }
+.ctl:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ctl.on { background: rgba(255, 122, 89, 0.14); color: #ffb49c; }
+.ctl.primary {
+  background: var(--accent);
+  color: #1c0d08;
+  font-weight: 700;
+}
+.ctl.primary:hover { background: #ff9277; color: #1c0d08; }
+
+.speed {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 108px;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.18);
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(255, 122, 89, 0.16);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+}
+output {
+  min-width: 34px;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  font-size: 11px;
+}
+.hint {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.42);
+  text-align: center;
+}
+
+/* ---------------- intro ---------------- */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  background:
+    radial-gradient(120% 90% at 50% 18%, rgba(30, 34, 52, 0.28), rgba(4, 5, 9, 0.86)),
+    rgba(4, 5, 9, 0.3);
+  backdrop-filter: blur(11px) saturate(0.9);
+  -webkit-backdrop-filter: blur(11px) saturate(0.9);
+  transition: opacity 0.85s ease, visibility 0.85s ease;
+}
+.intro.gone { opacity: 0; visibility: hidden; }
+.intro-inner {
+  text-align: center;
+  max-width: 660px;
+  animation: rise 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.46em;
+  color: rgba(255, 208, 164, 0.72);
+  margin-bottom: 24px;
+}
+.intro h1 {
+  margin: 0;
+  font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", Didot, "Bodoni 72", Georgia, serif;
+  font-size: clamp(46px, 9vw, 96px);
+  line-height: 0.95;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+.intro h1 span {
+  display: block;
+  margin-top: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font-size: clamp(10px, 1.5vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.52em;
+  color: rgba(255, 255, 255, 0.5);
+}
+.intro p {
+  margin: 26px auto 34px;
+  max-width: 30em;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 14px;
+  line-height: 2;
+  letter-spacing: 0.02em;
+}
+#start {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0.24em;
+  padding: 15px 46px 15px 50px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
+  backdrop-filter: blur(6px);
+}
+#start:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #1c0d08;
+  box-shadow: 0 14px 50px rgba(255, 122, 89, 0.34);
+}
+#start:active { transform: scale(0.97); }
+#start:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.intro-hint {
+  margin-top: 22px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.32);
+}
+
+/* ---------------- toast / flash / fallback ---------------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 128px;
+  transform: translate(-50%, 10px);
+  z-index: 30;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: rgba(8, 10, 16, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+.flash {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.55s ease;
+}
+.flash.on { opacity: 0.72; transition: none; }
+
+.fallback[hidden] { display: none !important; }
+.fallback {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #07080c;
+  text-align: center;
+}
+.fallback h2 { font-weight: 600; letter-spacing: 0.08em; }
+.fallback p { color: var(--muted); font-size: 14px; line-height: 1.9; }
+
+.ui-hidden .hud-top,
+.ui-hidden .hud-bottom { opacity: 0; pointer-events: none; }
+
+@media (max-width: 760px) {
+  .hud-top { left: 18px; right: 18px; }
+  .tag { display: none; }
+  .panel { flex-wrap: wrap; justify-content: center; row-gap: 2px; }
+  .speed { order: -1; width: 100%; justify-content: center; }
+  .ctl { padding: 9px 11px; font-size: 11px; }
+  .hint { display: none; }
+  .toast { bottom: 150px; }
+}
+@media (max-width: 420px) {
+  .intro p { font-size: 13px; }
+  .intro-hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-inner { animation: none; }
+}

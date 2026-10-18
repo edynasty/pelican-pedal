@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>鹈鹕骑行 · Pelican Pedal</title>
+<meta name="description" content="一只戴头盔的鹈鹕骑着复古单车，沿着落日海岸的木栈道前行。纯程序化 Three.js 3D 场景，可交互、可昼夜切换、可鸣笛。">
+<meta name="theme-color" content="#0b0d14">
+<meta property="og:title" content="鹈鹕骑行 · Pelican Pedal">
+<meta property="og:description" content="一只戴头盔的鹈鹕骑着复古单车，沿着落日海岸的木栈道前行。">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d14'/%3E%3Ccircle cx='32' cy='32' r='17' fill='none' stroke='%232b8f86' stroke-width='3'/%3E%3Cpath d='M20 34c8-10 20-10 25 0-7 6-18 6-25 0z' fill='%23f8f2e4'/%3E%3Cpath d='M44 31l9-3-9-1z' fill='%23f0a24a'/%3E%3C/svg%3E">
+<style>
+/*__CSS__*/
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<header class="hud-top">
+  <div class="brand">PELICAN<span>/</span>PEDAL</div>
+  <div class="tag">SUNSET COAST · PROCEDURAL 3D</div>
+</header>
+
+<div class="hud-bottom">
+  <div class="panel">
+    <label class="speed" for="speed">
+      <span>速度</span>
+      <input id="speed" type="range" min="0" max="2" step="0.01" value="1" aria-label="骑行速度">
+      <output id="speedOut" for="speed">1.0×</output>
+    </label>
+    <button id="night" class="ctl" aria-pressed="false">星夜</button>
+    <button id="view" class="ctl">视角</button>
+    <button id="honk" class="ctl primary">鸣笛</button>
+    <button id="shot" class="ctl">截图</button>
+    <button id="sound" class="ctl on" aria-pressed="true">声音</button>
+    <button id="full" class="ctl">全屏</button>
+  </div>
+  <div class="hint">拖动旋转 · 滚轮缩放 · 空格鸣笛 · 1–5 切换视角 · H 隐藏界面</div>
+</div>
+
+<div id="intro" class="intro">
+  <div class="intro-inner">
+    <div class="eyebrow">A PROCEDURAL THREE.JS RIDE</div>
+    <h1>鹈鹕骑行<span>PELICAN · PEDAL · SUNSET</span></h1>
+    <p>一只戴头盔的鹈鹕，一辆青绿色的复古单车，<br>一条通往落日海岸的木栈道。</p>
+    <button id="start">开始骑行</button>
+    <div class="intro-hint">拖动旋转 · 滚轮缩放 · 点击车铃或鹈鹕</div>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div id="flash" class="flash"></div>
+
+<div id="fallback" class="fallback" hidden>
+  <div>
+    <h2>无法启动 3D</h2>
+    <p>这个页面需要支持 WebGL 的浏览器。请更新浏览器或开启硬件加速后重试。</p>
+  </div>
+</div>
+
+<noscript><div class="fallback"><div><h2>需要 JavaScript</h2><p>请开启 JavaScript 以查看这个 3D 场景。</p></div></div></noscript>
+
+<script>
+/*__JS__*/
+</script>
+</body>
+</html>
